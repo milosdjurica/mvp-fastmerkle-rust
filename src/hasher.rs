@@ -1,3 +1,4 @@
+use std::sync::Mutex;
 use tiny_keccak::{Hasher, Keccak};
 
 pub struct FastHasher {
@@ -21,4 +22,19 @@ impl FastHasher {
         self.hash_engine.clone().finalize(&mut result);
         result.to_vec()
     }
+}
+
+pub struct FastHasherPool {
+    pool: Mutex<Vec<FastHasher>>,
+}
+
+impl FastHasherPool {
+    pub fn new() -> Self {
+        FastHasherPool {
+            pool: Mutex::new(vec![]),
+        }
+    }
+
+    pub fn acquire() {}
+    pub fn release() {}
 }
