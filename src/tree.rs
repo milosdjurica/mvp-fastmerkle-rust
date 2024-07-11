@@ -33,3 +33,22 @@ impl Node {
         self.hash.clone()
     }
 }
+
+pub struct MerkleTree {
+    root: Option<Box<Node>>,
+}
+
+impl MerkleTree {
+    pub fn new(root: Option<Box<Node>>) -> Self {
+        MerkleTree { root }
+    }
+
+    pub fn root(&self) -> Option<&Node> {
+        self.root.as_deref()
+    }
+
+    // Get the root hash of the Merkle tree
+    pub fn root_hash(&self) -> Option<Vec<u8>> {
+        self.root.as_ref().map(|node| node.hash())
+    }
+}
