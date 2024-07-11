@@ -20,6 +20,16 @@ impl Node {
         }
     }
 
-    fn duplicate(&self) {}
-    fn hash(&self) {}
+    fn duplicate(&self) -> Node {
+        Node {
+            hash: self.hash.clone(),
+            left: self.left.as_ref().map(|left| Box::new(left.duplicate())),
+            right: self.right.as_ref().map(|right| Box::new(right.duplicate())),
+            parent: self.parent,
+        }
+    }
+
+    fn hash(&self) -> Vec<u8> {
+        self.hash.clone()
+    }
 }
