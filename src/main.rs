@@ -1,5 +1,5 @@
 mod hasher;
-
+mod tree;
 use hasher::FastHasher;
 
 fn main() {
