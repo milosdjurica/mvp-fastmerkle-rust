@@ -1,8 +1,11 @@
+use crate::hasher::{FastHasher, FastHasherPool};
 use crossbeam_channel::{bounded, Receiver, Sender};
+use std::sync::Arc;
 
 pub struct WorkerPool {
     results_sender: Sender<WorkerResult>,
     results_receiver: Receiver<WorkerResult>,
+    hasher_pool: Arc<FastHasherPool>,
 }
 
 pub struct WorkerJob {
@@ -17,11 +20,12 @@ pub struct WorkerResult {
 }
 
 impl WorkerPool {
-    pub fn new(expected_num_results: usize) -> Self {
+    pub fn new(expected_num_results: usize, hasher_pool: Arc<FastHasherPool>) -> Self {
         let (sender, receiver) = bounded(expected_num_results);
         WorkerPool {
             results_sender: sender,
             results_receiver: receiver,
+            hasher_pool,
         }
     }
 
@@ -32,5 +36,41 @@ impl WorkerPool {
     pub fn close(&self) {
         drop(&self.results_sender);
         drop(&self.results_receiver);
+    }
+
+    pub fn add_job(&self, job: WorkerJob) {
+        let sender = self.results_sender.clone();
+        let hasher_pool_clone = Arc::clone(&self.hasher_pool);
+        std::thread::spawn(move || {
+            let result = Self::run_job(job, hasher_pool_clone);
+            sender.send(result).unwrap();
+        });
+    }
+
+    fn run_job(job: WorkerJob, hasher_pool: Arc<FastHasherPool>) -> WorkerResult {
+        let mut hasher_guard = hasher_pool.acquire();
+        let mut hasher = match hasher_guard.pop() {
+            Some(fh) => fh,
+            None => FastHasher::new(),
+        };
+
+        let mut prepared_array = vec![];
+        for data in job.source_data {
+            prepared_array.extend(data);
+        }
+
+        let error = match hasher.add_to_hash(&prepared_array) {
+            Ok(_) => None,
+            Err(e) => Some(Box::new(e) as Box<dyn std::error::Error + Send + Sync>),
+        };
+
+        let hash_data = hasher.get_hash();
+        hasher_pool.release(hasher);
+
+        WorkerResult {
+            store_index: job.store_index,
+            hash_data,
+            error,
+        }
     }
 }
