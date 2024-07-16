@@ -33,9 +33,9 @@ impl WorkerPool {
         self.results_receiver.recv().unwrap()
     }
 
-    pub fn close(&self) {
-        drop(&self.results_sender);
-        drop(&self.results_receiver);
+    pub fn close(self) {
+        drop(self.results_sender);
+        drop(self.results_receiver);
     }
 
     pub fn add_job(&self, job: WorkerJob) {

@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct Node {
     hash: Vec<u8>,
     left: Option<Box<Node>>,
