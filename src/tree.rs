@@ -20,7 +20,7 @@ impl Node {
         }
     }
 
-    fn duplicate(&self) -> Node {
+    pub fn duplicate(&self) -> Node {
         Node {
             hash: self.hash.clone(),
             left: self.left.as_ref().map(|left| Box::new(left.duplicate())),

@@ -7,4 +7,9 @@ pub fn pack_level_results(nodes: Vec<Node>) {}
 
 pub fn generate_leaves(input_data: Vec<Vec<u8>>, worker_pool: WorkerPool) {}
 
-pub fn adjust_level_size(nodes: Vec<Node>) {}
+pub fn adjust_level_size(mut nodes: Vec<Node>) -> Vec<Node> {
+    if nodes.len() % 2 != 0 {
+        nodes.push(nodes.last().unwrap().duplicate());
+    }
+    nodes
+}
