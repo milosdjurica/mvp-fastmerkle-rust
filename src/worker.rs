@@ -2,6 +2,7 @@ use crate::hasher::{FastHasher, FastHasherPool};
 use crossbeam_channel::{bounded, Receiver, Sender};
 use std::sync::Arc;
 
+#[derive(Clone)]
 pub struct WorkerPool {
     results_sender: Sender<WorkerResult>,
     results_receiver: Receiver<WorkerResult>,
@@ -9,14 +10,14 @@ pub struct WorkerPool {
 }
 
 pub struct WorkerJob {
-    store_index: usize,
-    source_data: Vec<Vec<u8>>,
+    pub store_index: usize,
+    pub source_data: Vec<Vec<u8>>,
 }
 
 pub struct WorkerResult {
-    store_index: usize,
-    hash_data: Vec<u8>,
-    error: Option<Box<dyn std::error::Error + Send + Sync>>,
+    pub store_index: usize,
+    pub hash_data: Vec<u8>,
+    pub error: Option<Box<dyn std::error::Error + Send + Sync>>,
 }
 
 impl WorkerPool {
@@ -33,9 +34,9 @@ impl WorkerPool {
         self.results_receiver.recv().unwrap()
     }
 
-    pub fn close(&self) {
-        drop(&self.results_sender);
-        drop(&self.results_receiver);
+    pub fn close(self) {
+        drop(self.results_sender);
+        drop(self.results_receiver);
     }
 
     pub fn add_job(&self, job: WorkerJob) {

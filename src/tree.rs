@@ -1,8 +1,9 @@
+#[derive(Clone)]
 pub struct Node {
-    hash: Vec<u8>,
-    left: Option<Box<Node>>,
-    right: Option<Box<Node>>,
-    parent: Option<*mut Node>,
+    pub hash: Vec<u8>,
+    pub left: Option<Box<Node>>,
+    pub right: Option<Box<Node>>,
+    pub parent: Option<*mut Node>,
 }
 
 impl Node {
@@ -20,7 +21,7 @@ impl Node {
         }
     }
 
-    fn duplicate(&self) -> Node {
+    pub fn duplicate(&self) -> Node {
         Node {
             hash: self.hash.clone(),
             left: self.left.as_ref().map(|left| Box::new(left.duplicate())),
@@ -35,7 +36,7 @@ impl Node {
 }
 
 pub struct MerkleTree {
-    root: Option<Box<Node>>,
+    pub root: Option<Box<Node>>,
 }
 
 impl MerkleTree {

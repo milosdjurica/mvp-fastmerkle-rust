@@ -1,4 +1,5 @@
 mod hasher;
+mod merkle_tree;
 mod tree;
 mod worker;
 use hasher::FastHasher;
