@@ -1,4 +1,5 @@
 use hex;
+use rand::{thread_rng, Rng};
 use std::error::Error;
 
 fn benchmark_generate_merkle_tree_5() {}
@@ -8,7 +9,16 @@ fn benchmark_generate_merkle_tree_1_000() {}
 fn benchmark_generate_merkle_tree_10_000() {}
 fn benchmark_generate_merkle_tree_1_000_000() {}
 
-fn generate_random_data(size: usize) -> Vec<Vec<u8>> {}
+fn generate_random_data(size: usize) -> Vec<Vec<u8>> {
+    let mut random_data = Vec::with_capacity(size);
+
+    for _ in 0..size {
+        let mut data = vec![0u8, 32];
+        thread_rng().fill(&mut data[..]);
+        random_data.push(data);
+    }
+    random_data
+}
 
 fn generate_input_set(size: usize) -> Vec<Vec<u8>> {
     let input_set = vec![
