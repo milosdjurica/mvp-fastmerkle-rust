@@ -1,11 +1,23 @@
 use crate::{
     hasher::FastHasherPool,
-    tree::Node,
+    tree::{MerkleTree, Node},
     worker::{WorkerJob, WorkerPool},
 };
 use std::{error::Error, sync::Arc};
 
-pub fn generate_merkle_tree(input_data: Vec<Vec<u8>>, hasher_pool: Arc<FastHasherPool>) {}
+pub fn generate_merkle_tree(
+    input_data: Vec<Vec<u8>>,
+    hasher_pool: Arc<FastHasherPool>,
+) -> Result<MerkleTree, Box<dyn Error + Send + Sync>> {
+    if input_data.is_empty() {
+        return Err("empty data set provided".into());
+    }
+
+    // Create the worker pool and put them on standby
+    let worker_pool = WorkerPool::new(input_data.len() + 1, hasher_pool);
+    // Generate the leaves of the Merkle tree
+    let mut nodes = generate_leaves(input_data, worker_pool);
+}
 
 pub fn pack_level_results(nodes: Vec<Node>) -> Vec<Node> {
     let mut new_nodes = Vec::with_capacity(nodes.len() / 2);
