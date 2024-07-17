@@ -9,14 +9,14 @@ pub struct WorkerPool {
 }
 
 pub struct WorkerJob {
-    store_index: usize,
-    source_data: Vec<Vec<u8>>,
+    pub store_index: usize,
+    pub source_data: Vec<Vec<u8>>,
 }
 
 pub struct WorkerResult {
-    store_index: usize,
-    hash_data: Vec<u8>,
-    error: Option<Box<dyn std::error::Error + Send + Sync>>,
+    pub store_index: usize,
+    pub hash_data: Vec<u8>,
+    pub error: Option<Box<dyn std::error::Error + Send + Sync>>,
 }
 
 impl WorkerPool {
