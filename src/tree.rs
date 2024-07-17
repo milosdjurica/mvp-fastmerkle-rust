@@ -36,7 +36,7 @@ impl Node {
 }
 
 pub struct MerkleTree {
-    root: Option<Box<Node>>,
+    pub root: Option<Box<Node>>,
 }
 
 impl MerkleTree {

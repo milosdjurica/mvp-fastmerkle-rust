@@ -2,6 +2,7 @@ use crate::hasher::{FastHasher, FastHasherPool};
 use crossbeam_channel::{bounded, Receiver, Sender};
 use std::sync::Arc;
 
+#[derive(Clone)]
 pub struct WorkerPool {
     results_sender: Sender<WorkerResult>,
     results_receiver: Receiver<WorkerResult>,
