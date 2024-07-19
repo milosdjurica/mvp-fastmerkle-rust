@@ -1,4 +1,4 @@
-use std::sync::{Mutex, MutexGuard};
+use std::sync::Mutex;
 use tiny_keccak::{Hasher, Keccak};
 
 pub struct FastHasher {
@@ -29,17 +29,25 @@ pub struct FastHasherPool {
 }
 
 impl FastHasherPool {
-    pub fn new() -> Self {
+    pub fn new(size: usize) -> Self {
+        let mut pool = Vec::with_capacity(size);
+
+        for _ in 0..size {
+            pool.push(FastHasher::new());
+        }
         FastHasherPool {
-            pool: Mutex::new(vec![]),
+            pool: Mutex::new(pool),
         }
     }
 
-    pub fn acquire(&self) -> MutexGuard<Vec<FastHasher>> {
-        self.pool.lock().unwrap()
+    pub fn acquire(&self) -> Option<FastHasher> {
+        let mut hasher_pool = self.pool.lock().unwrap();
+        hasher_pool.pop()
     }
 
     pub fn release(&self, fh: FastHasher) {
-        self.pool.lock().unwrap().push(fh);
+        // println!("INSIDE RELEASE");
+        let mut hasher_pool = self.pool.lock().unwrap();
+        hasher_pool.push(fh);
     }
 }
