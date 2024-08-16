@@ -1,6 +1,10 @@
 use std::error::Error;
 
-fn generate_input_set(size: usize) -> Vec<Vec<u8>> {
+fn generate_input_set(size: usize) -> Option<Vec<Vec<u8>>> {
+    if size < 1 {
+        return None;
+    }
+
     let input_set = vec![
         b"Lazar".to_vec(),
         b"Vuksan".to_vec(),
@@ -11,11 +15,8 @@ fn generate_input_set(size: usize) -> Vec<Vec<u8>> {
         b"Zeljko".to_vec(),
     ];
 
-    if size > input_set.len() {
-        input_set.clone()
-    } else {
-        input_set[..size].to_vec()
-    }
+    let size = size.min(input_set.len());
+    Some(input_set[..size].to_vec())
 }
 
 fn get_hex_bytes(input: &str) -> Result<Vec<u8>, Box<dyn Error>> {

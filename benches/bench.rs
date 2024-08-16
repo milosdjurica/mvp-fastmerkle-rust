@@ -50,7 +50,7 @@ criterion_group!(
     benchmark_generate_merkle_tree_50,
     benchmark_generate_merkle_tree_500,
     benchmark_generate_merkle_tree_1_000,
-    benchmark_generate_merkle_tree_10_000,
-    benchmark_generate_merkle_tree_1_000_000,
+    // benchmark_generate_merkle_tree_10_000,
+    // benchmark_generate_merkle_tree_1_000_000,
 );
 criterion_main!(benches);
