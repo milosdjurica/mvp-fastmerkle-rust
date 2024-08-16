@@ -1,4 +1,5 @@
 mod hasher;
+mod merkle_test;
 mod merkle_tree;
 mod tree;
 mod worker;

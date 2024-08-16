@@ -13,7 +13,6 @@ pub fn generate_merkle_tree(
         return Err("empty data set provided".into());
     }
 
-    // Create the worker pool and put them on standby
     let worker_pool = WorkerPool::new(input_data.len() + 1, hasher_pool);
     // Generate the leaves of the Merkle tree
     let mut nodes = generate_leaves(input_data, worker_pool.clone())?;
