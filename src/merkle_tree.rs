@@ -14,6 +14,7 @@ pub fn generate_merkle_tree(
     }
 
     let worker_pool = WorkerPool::new(input_data.len() + 1, hasher_pool);
+
     // Generate the leaves of the Merkle tree
     let mut nodes = generate_leaves(input_data, worker_pool.clone())?;
 
@@ -53,6 +54,7 @@ pub fn generate_merkle_tree(
 
         nodes = pack_level_results(nodes);
     }
+    worker_pool.close();
 
     Ok(MerkleTree {
         root: Some(Box::new(nodes[0].clone())),

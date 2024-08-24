@@ -1,4 +1,4 @@
-use crate::hasher::{FastHasher, FastHasherPool};
+use crate::hasher::FastHasherPool;
 use crossbeam_channel::{bounded, Receiver, Sender};
 use std::sync::Arc;
 
