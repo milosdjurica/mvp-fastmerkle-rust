@@ -41,11 +41,11 @@ pub fn generate_merkle_tree(
             };
 
             if let Some(left) = &mut nodes[result.store_index].parent {
-                *left = &parent as *const Node as *mut Node;
+                *left = Box::new(parent.clone());
             }
 
             if let Some(right) = &mut nodes[result.store_index + 1].parent {
-                *right = &parent as *const Node as *mut Node;
+                *right = Box::new(parent.clone());
             }
 
             nodes[result.store_index] = parent;

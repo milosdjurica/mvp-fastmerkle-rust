@@ -1,14 +1,15 @@
+use sha3::Digest;
+use sha3::Keccak256;
 use std::sync::Mutex;
-use tiny_keccak::{Hasher, Keccak};
 
 pub struct FastHasher {
-    hash_engine: Keccak,
+    hash_engine: Keccak256,
 }
 
 impl FastHasher {
     pub fn new() -> Self {
         FastHasher {
-            hash_engine: Keccak::v256(),
+            hash_engine: Keccak256::new(),
         }
     }
 
@@ -18,9 +19,7 @@ impl FastHasher {
     }
 
     pub fn get_hash(&mut self) -> Vec<u8> {
-        let mut result = [0u8; 32];
-        self.hash_engine.clone().finalize(&mut result);
-        result.to_vec()
+        self.hash_engine.finalize_reset().to_vec()
     }
 }
 
@@ -40,9 +39,9 @@ impl FastHasherPool {
         }
     }
 
-    pub fn acquire(&self) -> Option<FastHasher> {
+    pub fn acquire(&self) -> FastHasher {
         let mut hasher_pool = self.pool.lock().unwrap();
-        hasher_pool.pop()
+        hasher_pool.pop().unwrap()
     }
 
     pub fn release(&self, fh: FastHasher) {

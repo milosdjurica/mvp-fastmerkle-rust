@@ -49,10 +49,7 @@ impl WorkerPool {
     }
 
     fn run_job(job: WorkerJob, hasher_pool: Arc<FastHasherPool>) -> WorkerResult {
-        let mut hasher = match hasher_pool.acquire() {
-            Some(fh) => fh,
-            None => FastHasher::new(), // Fallback if no hasher is available
-        };
+        let mut hasher = hasher_pool.acquire();
 
         let mut prepared_array = vec![];
         for data in job.source_data {
