@@ -3,7 +3,7 @@ pub struct Node {
     pub hash: Vec<u8>,
     pub left: Option<Box<Node>>,
     pub right: Option<Box<Node>>,
-    pub parent: Option<*mut Node>,
+    pub parent: Option<Box<Node>>,
 }
 
 impl Node {
@@ -11,7 +11,7 @@ impl Node {
         hash: Vec<u8>,
         left: Option<Box<Node>>,
         right: Option<Box<Node>>,
-        parent: Option<*mut Node>,
+        parent: Option<Box<Node>>,
     ) -> Self {
         Node {
             hash,
@@ -26,12 +26,15 @@ impl Node {
             hash: self.hash.clone(),
             left: self.left.as_ref().map(|left| Box::new(left.duplicate())),
             right: self.right.as_ref().map(|right| Box::new(right.duplicate())),
-            parent: self.parent,
+            parent: self
+                .parent
+                .as_ref()
+                .map(|parent| Box::new(parent.duplicate())),
         }
     }
 
-    fn hash(&self) -> Vec<u8> {
-        self.hash.clone()
+    fn hash(&self) -> &Vec<u8> {
+        &self.hash
     }
 }
 
@@ -48,8 +51,7 @@ impl MerkleTree {
         self.root.as_deref()
     }
 
-    // Get the root hash of the Merkle tree
-    pub fn root_hash(&self) -> Option<Vec<u8>> {
+    pub fn root_hash(&self) -> Option<&Vec<u8>> {
         self.root.as_ref().map(|node| node.hash())
     }
 }
